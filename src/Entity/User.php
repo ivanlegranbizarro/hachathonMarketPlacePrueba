@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -102,6 +104,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['read', 'write', 'show'])]
     private ?\DateTimeImmutable $birthday = null;
 
+    /**
+     * @var Collection<int, Activity>
+     */
+    #[ORM\ManyToMany(targetEntity: Activity::class, mappedBy: 'participants')]
+    private Collection $activities;
+
+    public function __construct()
+    {
+        $this->activities = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -197,5 +210,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getAge(): int
     {
         return $this->birthday->diff(new \DateTimeImmutable())->y;
+    }
+
+    /**
+     * @return Collection<int, Activity>
+     */
+    public function getActivities(): Collection
+    {
+        return $this->activities;
+    }
+
+    public function addActivity(Activity $activity): static
+    {
+        if (!$this->activities->contains($activity)) {
+            $this->activities->add($activity);
+            $activity->addParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeActivity(Activity $activity): static
+    {
+        if ($this->activities->removeElement($activity)) {
+            $activity->removeParticipant($this);
+        }
+
+        return $this;
     }
 }
