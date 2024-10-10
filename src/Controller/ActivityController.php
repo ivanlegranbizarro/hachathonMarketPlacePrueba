@@ -48,4 +48,20 @@ class ActivityController extends AbstractController
 
         return new JsonResponse($data, Response::HTTP_OK);
     }
+
+    #[Route('/join/{activity}', name: 'join', methods: ['POST'])]
+    public function join(EntityManagerInterface $entityManager, Activity $activity): JsonResponse
+    {
+        $participantToAdd = $this->getUser();
+
+        if ($activity->getParticipants()->contains($participantToAdd)) {
+            return new JsonResponse(['message' => 'User already joined'], Response::HTTP_OK);
+        }
+
+        $activity->addParticipant($participantToAdd);
+
+        $entityManager->flush();
+
+        return new JsonResponse(['message' => 'User joined'], Response::HTTP_OK);
+    }
 }

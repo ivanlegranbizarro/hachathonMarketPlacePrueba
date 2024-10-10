@@ -53,7 +53,6 @@ class UserController extends AbstractController
             return new JsonResponse((string) $errors, Response::HTTP_BAD_REQUEST);
         }
 
-        $entityManager->persist($user);
         $entityManager->flush();
 
         return new JsonResponse(['message' => 'User updated'], Response::HTTP_OK);
