@@ -21,8 +21,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
-    #[Assert\Email(groups: ['create', 'edit'], message: 'Please enter a valid email')]
-    #[Assert\NotBlank(groups: ['create'], message: 'Please enter an email')]
+    #[Assert\Email(
+        message: 'Please enter a valid email',
+        groups: ['create', 'edit']
+    )]
+    #[Assert\NotBlank(
+        message: 'Please enter an email',
+        groups: ['create']
+    )]
     #[Groups(['read', 'write', 'show'])]
     private ?string $email = null;
 
@@ -37,31 +43,62 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
-    #[Assert\NotBlank(groups: ['create'], message: 'Please enter a password')]
-    #[Assert\Length(min: 6, groups: ['create'], message: 'Password must be at least 6 characters long')]
+    #[Assert\NotBlank(
+        message: 'Please enter a password',
+        groups: ['create']
+    )]
+    #[Assert\Length(
+        min: 6,
+        minMessage: 'Password must be at least 6 characters long',
+        groups: ['create']
+    )]
     #[Groups(['write'])]
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(groups: ['create'], message: 'Please enter your name')]
-    #[Assert\Length(min: 2, groups: ['create', 'edit'], message: 'Name must be at least 2 characters long')]
+    #[Assert\NotBlank(
+        message: 'Please enter your name',
+        groups: ['create']
+    )]
+    #[Assert\Length(
+        min: 2,
+        minMessage: 'Name must be at least 2 characters long',
+        groups: ['create', 'edit']
+    )]
     #[Groups(['read', 'write', 'show'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(groups: ['create'], message: 'Please enter your last name')]
-    #[Assert\Length(min: 3, groups: ['create', 'edit'], message: 'Last name must be at least 3 characters long')]
+    #[Assert\NotBlank(
+        message: 'Please enter your last name',
+        groups: ['create']
+    )]
+    #[Assert\Length(
+        min: 3,
+        minMessage: 'Last name must be at least 3 characters long',
+        groups: ['create', 'edit']
+    )]
     #[Groups(['read', 'write', 'show'])]
     private ?string $lastName = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(groups: ['create'], message: 'Please enter your username')]
-    #[Assert\Length(min: 5, groups: ['create', 'edit'], message: 'Username must be at least 5 characters long')]
+    #[Assert\NotBlank(
+        message: 'Please enter your username',
+        groups: ['create']
+    )]
+    #[Assert\Length(
+        min: 5,
+        minMessage: 'Username must be at least 5 characters long',
+        groups: ['create', 'edit']
+    )]
     #[Groups(['read', 'write', 'show'])]
     private ?string $username = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
-    #[Assert\NotBlank(groups: ['create'], message: 'Please enter your birthday')]
+    #[Assert\NotBlank(
+        message: 'Please enter your birthday',
+        groups: ['create']
+    )]
     #[Groups(['read', 'write', 'show'])]
     private ?\DateTimeImmutable $birthday = null;
 
@@ -147,7 +184,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getBirthday(): ?string
     {
-        return $this->birthday ? $this->birthday->format('d-m-Y') : null;
+        return $this->birthday->format('Y-m-d');
     }
 
     public function setBirthday(\DateTimeImmutable $birthday): static
