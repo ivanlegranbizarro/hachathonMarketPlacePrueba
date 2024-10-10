@@ -64,4 +64,52 @@ class ActivityController extends AbstractController
 
         return new JsonResponse(['message' => 'User joined'], Response::HTTP_OK);
     }
+
+    #[Route('/export', name: 'export', methods: ['GET'])]
+    public function export(EntityManagerInterface $entityManager, SerializerInterface $serializer): JsonResponse
+    {
+        $activities = $entityManager->getRepository(Activity::class)->findAll();
+
+        $data = $serializer->normalize($activities, null, ['groups' => ['read']]);
+
+        return new JsonResponse($data, Response::HTTP_OK, [
+            'Content-Type' => 'application/json',
+            'Content-Disposition' => 'attachment; filename="activities.json"',
+        ]);
+    }
+    #[Route('/import', name: 'import', methods: ['POST'])]
+    public function import(Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer, ValidatorInterface $validator): JsonResponse
+    {
+        $file = $request->files->get('file');
+        if (!$file || !$file->isValid()) {
+            return new JsonResponse(['error' => 'Invalid file'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $content = file_get_contents($file->getPathname());
+
+        $activities = $serializer->deserialize($content, Activity::class . '[]', 'json');
+
+        $errorsArray = [];
+
+        foreach ($activities as $activity) {
+            $errors = $validator->validate($activity);
+
+            if (count($errors) > 0) {
+                foreach ($errors as $error) {
+                    $errorsArray[] = $error->getMessage();
+                }
+                continue;
+            }
+
+            $entityManager->persist($activity);
+        }
+
+        $entityManager->flush();
+
+        if (count($errorsArray) > 0) {
+            return new JsonResponse(['errors' => $errorsArray], Response::HTTP_BAD_REQUEST);
+        }
+
+        return new JsonResponse(['message' => 'Activities imported successfully'], Response::HTTP_CREATED);
+    }
 }
