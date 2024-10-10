@@ -16,6 +16,27 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 #[Route('/api/user', name: 'app_user_')]
 class UserController extends AbstractController
 {
+    #[Route('/list', name: 'list', methods: ['GET'])]
+    public function list(EntityManagerInterface $entityManager, SerializerInterface $serializer): JsonResponse
+    {
+        $users = $entityManager->getRepository(User::class)->findAll();
+
+        $data = $serializer->normalize($users, null, ['groups' => ['read']]);
+
+        return new JsonResponse($data, Response::HTTP_OK);
+    }
+
+    #[Route('/show', name: 'show', methods: ['GET'])]
+    public function  show(SerializerInterface $serializer): JsonResponse
+    {
+        $user = $this->getUser();
+
+        $data = $serializer->normalize($user, null, ['groups' => ['show']]);
+
+        return new JsonResponse($data, Response::HTTP_OK);
+    }
+
+
     #[Route('/edit', name: 'edit', methods: ['PUT', 'PATCH'])]
     public function edit(Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer, ValidatorInterface $validator): JsonResponse
     {

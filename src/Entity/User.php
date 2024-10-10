@@ -17,20 +17,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read'])]
+    #[Groups(['read', 'show'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
     #[Assert\Email(groups: ['create', 'edit'], message: 'Please enter a valid email')]
     #[Assert\NotBlank(groups: ['create'], message: 'Please enter an email')]
-    #[Groups(['read', 'write'])]
+    #[Groups(['read', 'write', 'show'])]
     private ?string $email = null;
 
     /**
      * @var list<string> The user roles
      */
     #[ORM\Column]
-    #[Groups(['read'])]
+    #[Groups(['show'])]
     private array $roles = [];
 
     /**
@@ -45,24 +45,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(groups: ['create'], message: 'Please enter your name')]
     #[Assert\Length(min: 2, groups: ['create', 'edit'], message: 'Name must be at least 2 characters long')]
-    #[Groups(['read', 'write'])]
+    #[Groups(['read', 'write', 'show'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(groups: ['create'], message: 'Please enter your last name')]
     #[Assert\Length(min: 3, groups: ['create', 'edit'], message: 'Last name must be at least 3 characters long')]
-    #[Groups(['read', 'write'])]
+    #[Groups(['read', 'write', 'show'])]
     private ?string $lastName = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(groups: ['create'], message: 'Please enter your username')]
     #[Assert\Length(min: 5, groups: ['create', 'edit'], message: 'Username must be at least 5 characters long')]
-    #[Groups(['read', 'write'])]
+    #[Groups(['read', 'write', 'show'])]
     private ?string $username = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     #[Assert\NotBlank(groups: ['create'], message: 'Please enter your birthday')]
-    #[Groups(['read', 'write'])]
+    #[Groups(['read', 'write', 'show'])]
     private ?\DateTimeImmutable $birthday = null;
 
     public function getId(): ?int
@@ -145,9 +145,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getBirthday(): ?\DateTimeImmutable
+    public function getBirthday(): ?string
     {
-        return $this->birthday;
+        return $this->birthday ? $this->birthday->format('d-m-Y') : null;
     }
 
     public function setBirthday(\DateTimeImmutable $birthday): static
