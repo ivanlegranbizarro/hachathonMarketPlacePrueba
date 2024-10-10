@@ -193,6 +193,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    #[Groups(['show'])]
     public function getAge(): int
     {
         return $this->birthday->diff(new \DateTimeImmutable())->y;
