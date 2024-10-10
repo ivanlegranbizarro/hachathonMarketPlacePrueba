@@ -29,7 +29,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     )]
     #[Assert\NotBlank(
         message: 'Please enter an email',
-        groups: ['create']
+        groups: ['create', 'edit']
     )]
     #[Groups(['read', 'write', 'show'])]
     private ?string $email = null;
@@ -60,7 +60,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(
         message: 'Please enter your name',
-        groups: ['create']
+        groups: ['create', 'edit']
     )]
     #[Assert\Length(
         min: 2,
@@ -73,7 +73,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(
         message: 'Please enter your last name',
-        groups: ['create']
+        groups: ['create', 'edit']
     )]
     #[Assert\Length(
         min: 3,
@@ -86,7 +86,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(
         message: 'Please enter your username',
-        groups: ['create']
+        groups: ['create', 'edit']
     )]
     #[Assert\Length(
         min: 5,
@@ -99,7 +99,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     #[Assert\NotBlank(
         message: 'Please enter your birthday',
-        groups: ['create']
+        groups: ['create', 'edit']
     )]
     #[Groups(['read', 'write', 'show'])]
     private ?\DateTimeImmutable $birthday = null;

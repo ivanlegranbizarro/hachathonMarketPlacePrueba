@@ -1,9 +1,21 @@
 nelmio_api_doc:
     documentation:
         info:
-            title: My App
-            description: This is an awesome app!
+            title: Hackathon MarketPlace
+            description: API para la Hackathon MarketPlace de It Academy. Esta API permite la autenticación mediante JWT y la gestión de usuarios y de actividades.
             version: 1.0.0
-    areas: # to filter documented areas
-        path_patterns:
-            - ^/api(?!/doc$) # Accepts routes under /api except /api/doc
+            contact:
+                name: Iván Legrán
+                email: ivanlegranbizarro@gmail.com
+                url: https://github.com/ivanlegranbizarro
+        components:
+            securitySchemes:
+                bearerAuth:
+                    type: http
+                    scheme: bearer
+                    bearerFormat: JWT
+        security:
+            - bearerAuth: []
+
+    areas:
+        path_patterns: [ ^/api/(?!doc$|activity/(import|export|create)$).*$ ]
